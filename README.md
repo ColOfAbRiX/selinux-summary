@@ -1,6 +1,18 @@
 # SELinux Summary
 
-This summary is taken from the [Gentoo SELinux Tutorial](https://wiki.gentoo.org/wiki/SELinux/Tutorials) and it's been adapted from it.
+This summary has been adapted from the [Gentoo SELinux Tutorial](https://wiki.gentoo.org/wiki/SELinux/Tutorials).
+
+**[Seriously, stop disabling SELinux.](https://stopdisablingselinux.com/)**
+
+SELinux is an amazing technology and it's not that hard at all to understand
+and to start using it, so why disable it? Most people see it as an additional
+burden to whatever they are doing and don't really understand that can be
+easily tuned after having understood some of its functionalities, so they
+just disable it.
+
+This summary is here to give a quick and clear introduction to SELinux with the
+hope that people, after having read it, will be more comfortable keeping it
+enabled and enforcing.
 
 ## The security context of a process
 
@@ -96,33 +108,55 @@ This summary is taken from the [Gentoo SELinux Tutorial](https://wiki.gentoo.org
 
 ## Working with customizable types
 
- - Customizable types exist for files and resources that have no fixed location
-   on a file system
- - The list of current customizable types can be found in
-   /etc/selinux/*/contexts/customizable_types
- - The context of files with a customizable type context can be reset if you
-   use the force (-F) option during relabel operations
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Working_with_customizable_types)
+
+- Customizable types exist for files and resources that have no fixed location
+  on a file system.
+- Customizable types are type contexts which can be assigned on files and other
+  resources, and where this context is not reset during a standard relabel
+  operation.
+- They are most frequently used on files where the path of the file itself is
+  not really fixed on Linux system.
+- The list of current customizable types can be found in
+  `/etc/selinux/*/contexts/customizable_types`.
+- The context of files with a customizable type context can be reset if you
+  use the force (`restorecon -F`) option during relabel operations.
 
 ## Permissive versus enforcing
 
- - SELinux has two "modes" of operation: permissive and enforcing
- - In permissive mode SELinux does not enforce its policy, but only logs what
-   it would have blocked (or granted)
- - Applications that are SELinux-aware might still behave differently with
-   permissive mode than when SELinux is completely disabled
- - Specific types can be marked as permissive while the rest of the system is
-   in enforcing mode
- - Completely disabling SELinux has consequences on the file contexts so an
-   entire system relabeling is needed afterwards
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Permissive_versus_enforcing)
+
+- SELinux has two "modes" of operation: permissive and enforcing.
+- In permissive mode SELinux does not enforce its policy but only logs what
+  it would have blocked (or granted).
+- To get information about the current state, you can use `getenforce` or
+  `sestatus`. To switch from enforcing to permissive and back, you can use the
+  `setenforce` command.
+- The default value when the system boots is defined in the
+  `/etc/selinux/config` file. Another method to define how to boot is using the
+  `enforcing=` kernel boot parameter.
+- Applications that are SELinux-aware might still behave differently with
+  permissive mode than when SELinux is completely disabled.
+- Specific types can be marked as permissive while the rest of the system is
+  in enforcing mode.
+- Completely disabling SELinux has consequences on the file contexts so an
+  entire system relabeling is needed afterwards.
 
 ## What is this unconfined thingie
 
- - Unconfined domains run virtually without SELinux protection
- - Unconfined domains are meant to have users run with little SELinux
-   interference, whereas the network-facing daemons still run in confined,
-   SELinux-protected domains
- - SELinux has support for type attributes, which can group multiple different
-   types and assign privileges to the entire group of types
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/What_is_this_unconfined_thingie_and_tell_me_about_attributes)
+
+- Unconfined domains run virtually without SELinux protection.
+- Unconfined domains are meant to have users run with little SELinux
+  interference, whereas the network-facing daemons still run in confined,
+  SELinux-protected domains.
+- Policy writers can mark any domain as being an unconfined domain and they can
+  be checked using `seinfo -aunconfined_domain_type -x`.
+- Unconfined domains are only supported when the unconfined SELinux module is
+  loaded and can be checked using `seinfo -tunconfined_t`.
+- SELinux has support for type attributes, which can group multiple different
+  types and assign privileges to the entire group of types. You can query the
+  type attributes currently in the policy using `seinfo -a<domain> -x`.
 
 ## How is the policy provided and loaded?
 
@@ -187,6 +221,15 @@ This summary is taken from the [Gentoo SELinux Tutorial](https://wiki.gentoo.org
  - SELinux also labels udp/tcp ports as it is one of the many resources it
    governs
  - You can assign existing labels to other ports using semanage port
+
+## More resources
+
+- [A collection of notes on SElinux](http://equivocation.org/selinux)
+- [HowTos/SELinux - CentOS Wiki](https://wiki.centos.org/HowTos/SELinux)
+- [Security Enhanced Linux Reference Policy](http://oss.tresys.com/docs/refpolicy/api/interfaces.html)
+- [The SELinux Notebook - 4th Edition](https://selinuxproject.org/page/Category:Notebook)
+- [Type Enforcement File](https://danwalsh.livejournal.com/14442.html)
+- [SELinux Tutorial](https://hackinglinux.blogspot.co.uk/2007/05/selinux-tutorial.html)
 
 ## Credits
 
