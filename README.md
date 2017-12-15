@@ -18,9 +18,6 @@ enabled and enforcing.
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/The_security_context_of_a_process)
 
-- A process is assigned a security context which, just like with the user under
-  which the process runs, helps Linux in identifying what the application
-  should and shouldn't be allowed to do.
 - A security context is a specific label assigned to a process, which informs
   SELinux about the rights and privileges that are allowed to be granted on the
   process.
@@ -43,6 +40,9 @@ enabled and enforcing.
       class are the *permissions*.
 - It uses contexts for processes (domains) and contexts for files (types) as
   part of its internal language for allowing access.
+- The suffix `_t` is a naming convention to tell that the given label is a type
+  (or domain when it is for a running process), like in
+  `system_u:system_r:auditd_t` the part `auditd_t` is the domain name.
 - It uses the `allow <domain> <type>:<class> { <permissions> };` syntax for
   this access. This syntax is called "type enforcement";
 - It stores the security context (or SELinux context) of a file or directory as
@@ -160,28 +160,45 @@ enabled and enforcing.
 
 ## How is the policy provided and loaded?
 
- - SELinux uses a modular design for its policies, similar as how the Linux
-   kernel uses modules
- - A policy store is used to keep track of loaded policy modules and settings,
-   and is governed through the SELINUXTYPE setting in /etc/selinux/config
- - The semodule tool is used to load, unload, ... SELinux policies
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/How_is_the_policy_provided_and_loaded)
+
+- SELinux uses a modular design for its policies, similar as how the Linux
+  kernel uses modules.
+- A policy store is used to keep track of loaded policy modules and settings,
+  and is governed through the `SELINUXTYPE` setting in `/etc/selinux/config`.
+- The `semodule` tool is used to load, unload, ... SELinux policies.
 
 ## The purpose of SELinux roles
 
- - Roles dictate which domains that the user (or session) is allowed to go in
- - Changing roles is done using newrole
- - The SELinux user definitions declare what the supported roles are that a
-   user can "go" to
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/The_purpose_of_SELinux_roles)
+
+- Roles dictate which domains the user (or session) is allowed to go in. Domain
+  transitions still govern which domains the user launches in next.
+- The naming convention states that the role names should end with `_r`, like
+  in `user_u:user_r:user_t` the part `user_r` is the role name.
+- With the `seinfo -r<role_name> -x`, you can list what domains are allowed
+  for a particular role. With `semanage user -l` you can see what roles the
+  SELinux user is allowed to "be" in.
+- Changing roles is done using `newrole`.
+- The SELinux user definitions declare what the supported roles are that a
+  user can "go" to.
 
 ## Defining SELinux users
 
- - SELinux users define what roles a user is allowed to go to
-   Linux accounts are mapped to SELinux users (but they are not the same) in a
-   many-to-few relationship (usually)
- - The semanage login and semanage user set of commands are used to manipulate
-   these settings
- - SELinux user information rarely changes in a session (mostly only when
-   services are launched where they become system_u)
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Defining_SELinux_users)
+
+- SELinux users define what roles a user is allowed to go to.
+- Linux accounts are mapped to SELinux users (but they are not the same) in a
+  many-to-few relationship (usually).
+- The roles that are assigned to a particular SELinux user can be seen from
+  `semanage user -l`. The mapping of Linux accounts to SELinux users using can
+  be displayed using `semanage login -l`.
+- The catch-all account `__default__` ensures that all newly created Linux
+  account users are mapped to a specific SELinux user.
+- SELinux user information rarely changes in a session (mostly only when
+  services are launched where they become `system_u`).
+- The `semanage login` and `semanage user` set of commands are also used to
+  manipulate these settings.
 
 ## Linux services and the system_u SELinux user
 
@@ -222,8 +239,28 @@ enabled and enforcing.
    governs
  - You can assign existing labels to other ports using semanage port
 
+## Cheat sheet
+
+**ps auxZ**
+
+The option `-Z` shows the security context of the running processes.
+
+**ls -lZ**
+
+The option `-Z` shows the security context of the files and directories.
+
+**id -Z**
+
+The option `-Z` shows the security context of the current user.
+
+**ausearch --interpret --message AVC,USER_AVC --success no**
+
+To display the denials from the logs.
+
 ## More resources
 
+- [SELinux For Dummies](https://www.youtube.com/watch?v=q_y30qZ_plQ) (YouTube Video)
+- [Security-enhanced Linux for mere mortals](https://www.youtube.com/watch?v=cNoVgDqqJmM&feature=youtu.be) (YouTube Video)
 - [A collection of notes on SElinux](http://equivocation.org/selinux)
 - [HowTos/SELinux - CentOS Wiki](https://wiki.centos.org/HowTos/SELinux)
 - [Security Enhanced Linux Reference Policy](http://oss.tresys.com/docs/refpolicy/api/interfaces.html)
