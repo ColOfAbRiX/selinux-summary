@@ -202,29 +202,53 @@ enabled and enforcing.
 
 ## Linux services and the system_u SELinux user
 
- - Calling linux service scripts (init scripts) causes a change in SELinux user,
-   role and domain, partially due to policy and partially due to the run_init
-   command
- - Some service scripts are not labeled the regular initrc_exec_t and require a
-   different approach for calling them, and might result in the process to
-   remain running under the users' SELinux user (but that's okay)
- - It is the SELinux policy that governs changes in roles and users
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Linux_services_and_the_system_u_SELinux_user)
+
+- The `system_u` SELinux user is meant to be used for running system services.
+  In general, most daemons will be running as the `system_u` SELinux user in
+  the `system_r` role. Most access controls are situated around the domain part
+  of the context.
+- This is because SELinux user and SELinux role constraints are to govern the
+  activities that local users can do, as local user access is often considered
+  a risk.
+- Calling linux service scripts (init scripts) causes a change in SELinux
+  user, role and domain, partially due to policy and partially due to the
+  `run_init` command.
+- Some service scripts are not labelled the regular `initrc_exec_t` and require
+  a different approach for calling them, and might result in the process to
+  remain running under the users' SELinux user (but that's okay).
+- It is the SELinux policy that governs changes in roles and users.
 
 ## Putting constraints on operations
 
- - Constraints are an integral part of the SELinux policy
- - When something is denied even though there are (type enforcement) rules that
-   allow it, chances are very high that a constraint is involved
- - Constrains don't limit (blacklist) what is allowed, but filter (whitelist)
-   what is
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Putting_constraints_on_operations)
+
+- Constraints are an integral part of the SELinux policy.
+- When something is denied even though there are (type enforcement) rules that
+  allow it, chances are very high that a constraint is involved.
+- Unlike type enforcement, constraints use the entire context as their rules
+  and are more targeting operations rather than domains.
+- Constrains don't limit (blacklist) what is allowed, but filter (whitelist)
+  what is.
+- It is not possible to disable constraint.
+- You can ask your system to list the constraints using `seinfo --constrain`.
 
 ## SELinux Multi-Level Security
 
- - SELinux supports sensitivity levels (hierarchical) and categories (labels)
- - The SELinux policy dictates what is allowed based on the dominance between
-   two contexts
- - Distributions usually do not provide a starting set of sensitivities and
-   categories
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/SELinux_Multi-Level_Security)
+
+- SELinux supports sensitivity levels (hierarchical) and categories (labels).
+- The sensitivity level is the hierarchical part of the multi-level security
+  approach. With the sensitivity labels, an MLS-enabled system can mark certain
+  content as being of a certain sensitivity and have processes marked as
+  supporting a sensitivity.
+- The second part of the multi-level security are the categories which can be
+  seen as labels assigned to a resource. Unlike sensitivity levels, categories
+  do not have any correlation with each other.
+- The SELinux policy dictates what is allowed based on the dominance between
+  two contexts.
+- Distributions usually do not provide a starting set of sensitivities and
+  categories.
 
 ## SELinux Multi-Category Security
 
@@ -238,6 +262,61 @@ enabled and enforcing.
  - SELinux also labels udp/tcp ports as it is one of the many resources it
    governs
  - You can assign existing labels to other ports using semanage port
+
+## Glossary
+
+- **Booleans**: Runtime setting to enable customization of SELinux policy.
+
+- **Domain**: All processes and files are labelled with a type. A type defines
+  a domain for processes, and a type for files. Processes are separated from
+  each other by running in their own domains, and SELinux policy rules define
+  how processes interact with files, as well as how processes interact with
+  each other. Access is only allowed if an SELinux policy rule exists that
+  specifically allows it.
+
+- **Domain Transitions**: A process in one domain transitions to another domain
+  by executing an application that has the entrypoint type for the new domain.
+  The entrypoint permission is used in SELinux policy, and controls which
+  applications can be used to enter a domain.
+
+- **MLS/MCS**: MLS enforces the Bell-La Padula Mandatory Access Model, and is
+  used in Labeled Security Protection Profile (LSPP) environments. An MLS range
+  is a pair of levels, written as *lowlevel-highlevel* if the levels differ, or
+  *lowlevel* if the levels are identical (`s0-s0` is the same as `s0`). Each
+  level is a *sensitivity-category* pair, with categories being optional. If
+  there are categories, the level is written as *sensitivity:category-set*. If
+  there are no categories, it is written as *sensitivity*. An example of full
+  MLS level is `system_u:system_r:sshd_t:s0-s0:c0.c1023`.
+
+- **Policy**: A set of rules that guide the SELinux security engine. It defines
+  types for file objects and domains for processes, uses roles to limit the
+  domains that can be entered, and has user identities to specify the roles
+  that can be attained. A domain is what a type is called when it is applied to
+  a process.
+
+- **Role**: The second component of a SELinux security context. SELinux users
+  are authorized for roles, and roles are authorized for domains. The role
+  serves as an intermediary between domains and SELinux users. The roles that
+  can be entered determine which domains can be entered; ultimately, this
+  controls which object types can be accessed.
+
+- **Security Context**: Processes and files are labelled with an SELinux
+  context that contains additional information, such as an SELinux user, role,
+  type, and, optionally, a level. When running SELinux, all of this information
+  is used to make access control decisions.
+
+- **Type Enforcement**: Domains and their allowed permissions towards other
+  domains and types.
+
+- **Type**: The type defines a domain for processes, and a type for files.
+  SELinux policy rules define how types can access each other, whether it be a
+  domain accessing a type, or a domain accessing another domain. Access is
+  only allowed if a specific SELinux policy rule exists that allows it.
+
+- **User**: The SELinux user is an identity known to the policy that is
+  authorized for a specific set of roles, and for a specific MLS/MCS range.
+  Each Linux user is mapped to an SELinux user via SELinux policy. It defines
+  what roles are allowed for a specific SELinux user.
 
 ## Cheat sheet
 
@@ -261,6 +340,7 @@ To display the denials from the logs.
 
 - [SELinux For Dummies](https://www.youtube.com/watch?v=q_y30qZ_plQ) (YouTube Video)
 - [Security-enhanced Linux for mere mortals](https://www.youtube.com/watch?v=cNoVgDqqJmM&feature=youtu.be) (YouTube Video)
+- [Security-Enhanced Linux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/)
 - [A collection of notes on SElinux](http://equivocation.org/selinux)
 - [HowTos/SELinux - CentOS Wiki](https://wiki.centos.org/HowTos/SELinux)
 - [Security Enhanced Linux Reference Policy](http://oss.tresys.com/docs/refpolicy/api/interfaces.html)
