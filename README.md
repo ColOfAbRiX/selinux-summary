@@ -248,20 +248,17 @@ enabled and enforcing.
 - The SELinux policy dictates what is allowed based on the dominance between
   two contexts.
 - Distributions usually do not provide a starting set of sensitivities and
-  categories.
+  categories, but a range 0-1023 is common.
 
 ## SELinux Multi-Category Security
 
- - MCS is a 'smaller' version of MLS
- - Users (or applications) are responsible for handling the sensitivity (within
-   the limits of what is allowed by policy), SELinux does not automatically
-   'deduce' the right context
+[Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/SELinux_Multi-Category_Security)
 
-## Managing network port labels
-
- - SELinux also labels udp/tcp ports as it is one of the many resources it
-   governs
- - You can assign existing labels to other ports using semanage port
+- MCS is a reduced version of MLS, where the number of sensitivity levels is
+  one. By limiting the sensitivity levels, dominance rules are reduced as well.
+- Users (or applications) are responsible for handling the sensitivity (within
+  the limits of what is allowed by policy), SELinux does not automatically
+  'deduce' the right context.
 
 ## Glossary
 
@@ -305,8 +302,8 @@ enabled and enforcing.
   type, and, optionally, a level. When running SELinux, all of this information
   is used to make access control decisions.
 
-- **Type Enforcement**: Domains and their allowed permissions towards other
-  domains and types.
+- **Type Enforcement**: Type enforcement is the notion that access is governed
+  through clearance based on a subject-access-object set of rules.
 
 - **Type**: The type defines a domain for processes, and a type for files.
   SELinux policy rules define how types can access each other, whether it be a
@@ -344,7 +341,7 @@ To display the denials from the logs.
 - [A collection of notes on SElinux](http://equivocation.org/selinux)
 - [HowTos/SELinux - CentOS Wiki](https://wiki.centos.org/HowTos/SELinux)
 - [Security Enhanced Linux Reference Policy](http://oss.tresys.com/docs/refpolicy/api/interfaces.html)
-- [The SELinux Notebook - 4th Edition](https://selinuxproject.org/page/Category:Notebook)
+- [Red Hat Enterprise Linux 4 SELinux Guide](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/SELinux_Guide/index.html)
 - [Type Enforcement File](https://danwalsh.livejournal.com/14442.html)
 - [SELinux Tutorial](https://hackinglinux.blogspot.co.uk/2007/05/selinux-tutorial.html)
 
