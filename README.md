@@ -1,6 +1,8 @@
-# SELinux Summary
+# Understanding and Using SELinux
 
-This summary has been adapted from the [Gentoo SELinux Tutorial](https://wiki.gentoo.org/wiki/SELinux/Tutorials).
+## Introduction
+
+This summary has been adapted and extended from the [Gentoo SELinux Tutorial](https://wiki.gentoo.org/wiki/SELinux/Tutorials).
 
 **[Seriously, stop disabling SELinux.](https://stopdisablingselinux.com/)**
 
@@ -10,11 +12,13 @@ burden to whatever they are doing and don't really understand that can be
 easily tuned after having understood some of its functionalities, so they
 just disable it.
 
-This summary is here to give a quick and clear introduction to SELinux with the
-hope that people, after having read it, will be more comfortable keeping it
-enabled and enforcing.
+This summary is here to give a quick and clear introduction to the mechanics of
+SELinux with the hope that people, after having read it, will be more
+comfortable using it and keeping it enabled and enforcing.
 
-## The security context of a process
+## SELinux Summary
+
+### The security context of a process
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/The_security_context_of_a_process)
 
@@ -26,7 +30,7 @@ enabled and enforcing.
 - Several processes can be assigned the same label.
 - A process is always assigned one and exactly one label.
 
-## How SELinux controls file and directory accesses
+### How SELinux controls file and directory accesses
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/How_SELinux_controls_file_and_directory_accesses)
 
@@ -48,7 +52,7 @@ enabled and enforcing.
 - It stores the security context (or SELinux context) of a file or directory as
   an extended attribute of this file.
 
-## Where to find SELinux permission denial details
+### Where to find SELinux permission denial details
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details)
 
@@ -62,7 +66,7 @@ enabled and enforcing.
 - Useful tools to work with denials are: `seinfo`, `semodule`, `sesearch`,
   `ausearch` and `sealert` (where installed).
 
-## Controlling file contexts yourself
+### Controlling file contexts yourself
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Controlling_file_contexts_yourself)
 
@@ -77,7 +81,7 @@ enabled and enforcing.
   against the contexts definitions stored in the SELinux context and then apply
   the correct context.
 
-## How does a process get into a certain context
+### How does a process get into a certain context
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/How_does_a_process_get_into_a_certain_context)
 
@@ -92,7 +96,7 @@ enabled and enforcing.
     - the target file context is marked as an entrypoint for the target domain;
     - the source domain is allowed to transition to the target domain;
 
-## Using SELinux booleans
+### Using SELinux booleans
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Using_SELinux_booleans)
 
@@ -106,7 +110,7 @@ enabled and enforcing.
  - You can use `sesearch` to display the consequences of a boolean or to see if
    a boolean is available to allow certain statements.
 
-## Working with customizable types
+### Working with customizable types
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Working_with_customizable_types)
 
@@ -122,7 +126,7 @@ enabled and enforcing.
 - The context of files with a customizable type context can be reset if you
   use the force (`restorecon -F`) option during relabel operations.
 
-## Permissive versus enforcing
+### Permissive versus enforcing
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Permissive_versus_enforcing)
 
@@ -142,7 +146,7 @@ enabled and enforcing.
 - Completely disabling SELinux has consequences on the file contexts so an
   entire system relabeling is needed afterwards.
 
-## What is this unconfined thingie
+### What is this unconfined thingie
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/What_is_this_unconfined_thingie_and_tell_me_about_attributes)
 
@@ -158,7 +162,7 @@ enabled and enforcing.
   types and assign privileges to the entire group of types. You can query the
   type attributes currently in the policy using `seinfo -a<domain> -x`.
 
-## How is the policy provided and loaded?
+### How is the policy provided and loaded?
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/How_is_the_policy_provided_and_loaded)
 
@@ -168,7 +172,7 @@ enabled and enforcing.
   and is governed through the `SELINUXTYPE` setting in `/etc/selinux/config`.
 - The `semodule` tool is used to load, unload, ... SELinux policies.
 
-## The purpose of SELinux roles
+### The purpose of SELinux roles
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/The_purpose_of_SELinux_roles)
 
@@ -183,7 +187,7 @@ enabled and enforcing.
 - The SELinux user definitions declare what the supported roles are that a
   user can "go" to.
 
-## Defining SELinux users
+### Defining SELinux users
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Defining_SELinux_users)
 
@@ -200,7 +204,7 @@ enabled and enforcing.
 - The `semanage login` and `semanage user` set of commands are also used to
   manipulate these settings.
 
-## Linux services and the system_u SELinux user
+### Linux services and the system_u SELinux user
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Linux_services_and_the_system_u_SELinux_user)
 
@@ -219,7 +223,7 @@ enabled and enforcing.
   remain running under the users' SELinux user (but that's okay).
 - It is the SELinux policy that governs changes in roles and users.
 
-## Putting constraints on operations
+### Putting constraints on operations
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Putting_constraints_on_operations)
 
@@ -233,7 +237,7 @@ enabled and enforcing.
 - It is not possible to disable constraint.
 - You can ask your system to list the constraints using `seinfo --constrain`.
 
-## SELinux Multi-Level Security
+### SELinux Multi-Level Security
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/SELinux_Multi-Level_Security)
 
@@ -250,7 +254,7 @@ enabled and enforcing.
 - Distributions usually do not provide a starting set of sensitivities and
   categories, but a range 0-1023 is common.
 
-## SELinux Multi-Category Security
+### SELinux Multi-Category Security
 
 [Full online page on Gentoo](https://wiki.gentoo.org/wiki/SELinux/Tutorials/SELinux_Multi-Category_Security)
 
@@ -340,10 +344,9 @@ To display the denials from the logs.
 - [Security-Enhanced Linux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/)
 - [A collection of notes on SElinux](http://equivocation.org/selinux)
 - [HowTos/SELinux - CentOS Wiki](https://wiki.centos.org/HowTos/SELinux)
-- [Security Enhanced Linux Reference Policy](http://oss.tresys.com/docs/refpolicy/api/interfaces.html)
-- [Red Hat Enterprise Linux 4 SELinux Guide](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/SELinux_Guide/index.html)
-- [Type Enforcement File](https://danwalsh.livejournal.com/14442.html)
-- [SELinux Tutorial](https://hackinglinux.blogspot.co.uk/2007/05/selinux-tutorial.html)
+- [Red Hat Enterprise Linux 4 SELinux Guide](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/SELinux_Guide/index.html) (outdated but really good explanation and details)
+- [Tresys Technology Reference Policy](http://oss.tresys.com/docs/refpolicy/api/)
+- [Tresys Technology Reference Policy](https://github.com/TresysTechnology/refpolicy) (source code on GitHub)
 
 ## Credits
 
